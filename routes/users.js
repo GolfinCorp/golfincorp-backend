@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { tokenValidate } = require("../middlewares/auth");
-const { userRegister, login, getUserData } = require("../controllers/users");
-
-router.post("/register", userRegister);
+const { login, getUserData } = require("../controllers/users");
 
 router.post("/login", login);
 
