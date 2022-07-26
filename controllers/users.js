@@ -2,6 +2,7 @@
 const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
+const Club = require("../models/Club");
 const { generateAccessToken } = require("../middlewares/auth");
 
 const saltRounds = 10;
@@ -98,7 +99,12 @@ const login = async (req, res) => {
 
   let token;
   if (bcrypt.compare(password, user.password)) {
-    token = generateAccessToken(user.username);
+    token = generateAccessToken({
+      role: user.role,
+      email: user.email,
+      memberId: user.memberId || null,
+      clubId: user.clubId,
+    });
   } else {
     return res.status(406).send({ error: "Incorrect Password" });
   }

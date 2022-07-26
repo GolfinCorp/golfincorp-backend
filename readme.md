@@ -1,6 +1,6 @@
-# Restful api with Express.js 💻
+# Golfincorp Api 🏌️
 
-Mongodb and Express study project to work as a backend for https://github.com/olaracode/pinterest-clone
+Restful api created for golfincorp.
 
 ## **Stack 🔰**
 
