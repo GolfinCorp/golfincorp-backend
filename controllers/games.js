@@ -27,7 +27,7 @@ const createGame = async (req, res) => {
 };
 
 // ? If member gets all his game, else get all the club games
-const getGamesByUser = async (req, res) => {
+const getGames = async (req, res) => {
   try {
     const games = await Game.find(
       req.user.memberId
@@ -40,4 +40,4 @@ const getGamesByUser = async (req, res) => {
   }
 };
 
-module.exports = { createGame, getGamesByUser };
+module.exports = { createGame, getGames };

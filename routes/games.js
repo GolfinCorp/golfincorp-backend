@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const { createGame, getGamesByUser } = require("../controllers/games");
+const { createGame, getGames } = require("../controllers/games");
 const { tokenValidate } = require("../middlewares/auth");
 
-router.get("/", tokenValidate, getGamesByUser);
+router.get("/", tokenValidate, getGames);
 router.post("/create", tokenValidate, createGame);
 module.exports = router;
