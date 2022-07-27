@@ -42,12 +42,22 @@ const getGames = async (req, res) => {
 const manageGame = async (req, res) => {
   try {
     let { status, gameId } = req.body;
+
     if (req.user.role === "member") {
       status = "cancelled";
     }
+
     if (!status || !gameId) {
       return res.status(400).send({ error: "Game status and id are required" });
     }
+
+    const gameExists = await Game.findOne({ _id: gameId });
+    if (!gameExists) {
+      return res
+        .status(404)
+        .send({ error: "Gamd id does not match any existing game" });
+    }
+
     const gameRespone = await Game.findByIdAndUpdate(
       { _id: gameId },
       { status: status }
