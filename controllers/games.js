@@ -59,4 +59,27 @@ const manageGame = async (req, res) => {
   }
 };
 
-module.exports = { createGame, getGames, manageGame };
+const deleteGame = async (req, res) => {
+  try {
+    const { gameId } = req.body;
+    if (!gameId) {
+      return res.status(400).send({ error: "Game Id is required" });
+    }
+
+    const gameExist = await Game.findOne({ _id: gameId });
+    if (!gameExist) {
+      return res
+        .status(404)
+        .send({ error: "Game id provided does not match any existing game" });
+    }
+
+    const deleteResponse = await Game.deleteOne({ _id: gameId });
+    return res
+      .status(200)
+      .send({ msg: "Game deleted succesfully", deleteResponse });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports = { createGame, getGames, manageGame, deleteGame };
