@@ -1,4 +1,4 @@
-const { restart } = require("nodemon");
+const { restart, reset } = require("nodemon");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
 
@@ -40,4 +40,23 @@ const getGames = async (req, res) => {
   }
 };
 
-module.exports = { createGame, getGames };
+const manageGame = async (req, res) => {
+  try {
+    let { status, gameId } = req.body;
+    if (req.user.role === "member") {
+      status = "cancelled";
+    }
+    if (!status || !gameId) {
+      return res.status(400).send({ error: "Game status and id are required" });
+    }
+    const gameRespone = await Game.findByIdAndUpdate(
+      { _id: gameId },
+      { status: status }
+    );
+    return res.status(200).send(gameRespone);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+module.exports = { createGame, getGames, manageGame };

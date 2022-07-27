@@ -6,6 +6,7 @@ const GameSchema = new mongoose.Schema({
   membership: { type: String, required: true },
   memberName: { type: String, required: true },
   date: { type: String, required: true },
+  status: { type: String, default: "oncoming" },
   guests: [
     {
       name: { type: String, required: true },
