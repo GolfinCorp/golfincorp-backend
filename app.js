@@ -12,15 +12,16 @@ require("dotenv").config();
 
 // Express app declaration
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(8080, () => {
-      console.log("server is listening on port 8080");
-    });
-  })
-  .catch((err) => console.log(Error));
+	.connect(process.env.MONGO_URI)
+	.then(() => {
+		app.listen(8080, () => {
+			console.log("server is listening on port 8080");
+		});
+	})
+	.catch((err) => console.log(Error));
 
 // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Base Routes
