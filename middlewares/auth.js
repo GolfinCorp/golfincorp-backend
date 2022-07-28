@@ -14,4 +14,12 @@ const generateAccessToken = (user) => {
 	return jwt.sign(user, process.env.JWT_SECRET);
 };
 
-module.exports = { tokenValidate, generateAccessToken };
+const requireAdmin = (req, res, next) => {
+	const { user } = req;
+	if (user.role !== "admin") {
+		return res.status(401).send({ error: "Admin rights are required" });
+	}
+	next();
+};
+
+module.exports = { tokenValidate, generateAccessToken, requireAdmin };
