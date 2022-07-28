@@ -52,7 +52,23 @@ const createMember = async (req, res) => {
 
     return res.status(200).send({ user, member: memberResponse });
   } catch (err) {
-    console.log(err);
+    return res.status(500).send({ error: err });
+  }
+};
+
+const updateMember = async (req, res) => {
+  try {
+    const { memberId, firstName, lastname, membership } = req.body;
+    if (!memberId) {
+      return res.status(400).send({ msg: "Member Id is required" });
+    } else if (!firstName && !lastname && !membership) {
+      return res.status(400).send({
+        msg: "Either the firstname, lastname or membership are required to update",
+      });
+    }
+    const member = member;
+  } catch (err) {
+    return res.status(500).send({ error: err });
   }
 };
 
