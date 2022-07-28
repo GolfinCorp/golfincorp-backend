@@ -1,5 +1,6 @@
 const Game = require("../models/Game");
 const Member = require("../models/Members");
+const router = require("../routes/games");
 
 const createGame = async (req, res) => {
   try {
@@ -70,19 +71,18 @@ const manageGame = async (req, res) => {
 
 const deleteGame = async (req, res) => {
   try {
-    const { gameId } = req.body;
-    if (!gameId) {
+    if (!req.params.id) {
       return res.status(400).send({ error: "Game Id is required" });
     }
 
-    const gameExist = await Game.findOne({ _id: gameId });
+    const gameExist = await Game.findOne({ _id: req.params.id });
     if (!gameExist) {
       return res
         .status(404)
         .send({ error: "Game id provided does not match any existing game" });
     }
 
-    const deleteResponse = await Game.deleteOne({ _id: gameId });
+    const deleteResponse = await Game.deleteOne({ _id: req.params.id });
     return res
       .status(200)
       .send({ msg: "Game deleted succesfully", deleteResponse });

@@ -7,8 +7,9 @@ const {
 } = require("../controllers/members");
 const { tokenValidate } = require("../middlewares/auth");
 
-router.post("/create", tokenValidate, createMember);
-router.delete("/delete", tokenValidate, deleteMember);
-router.put("/:memberId", tokenValidate, updateMember);
+router.use(tokenValidate);
+router.post("/create", createMember);
+router.delete("/delete", deleteMember);
+router.put("/:memberId", updateMember);
 
 module.exports = router;

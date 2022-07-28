@@ -8,9 +8,10 @@ const {
   deleteGame,
 } = require("../controllers/games");
 
-router.get("/", tokenValidate, getGames);
-router.put("/manage", tokenValidate, manageGame);
-router.post("/create", tokenValidate, createGame);
-router.delete("/delete", tokenValidate, deleteGame);
+router.use(tokenValidate);
+router.get("/", getGames);
+router.put("/manage", manageGame);
+router.post("/create", createGame);
+router.delete("/:id", deleteGame);
 
 module.exports = router;
