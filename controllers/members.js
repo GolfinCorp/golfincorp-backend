@@ -58,15 +58,27 @@ const createMember = async (req, res) => {
 
 const updateMember = async (req, res) => {
   try {
-    const { memberId, firstName, lastname, membership } = req.body;
-    if (!memberId) {
+    const { firstName, lastname, membership } = req.body;
+    console.log(req.params.memberId);
+    const member = await Member.findOne({ _id: req.params.memberId });
+
+    // Fields validation
+    if (!req.params.memberId) {
       return res.status(400).send({ msg: "Member Id is required" });
     } else if (!firstName && !lastname && !membership) {
       return res.status(400).send({
         msg: "Either the firstname, lastname or membership are required to update",
       });
+    } else if (!member) {
+      return res.status(404).send({
+        error: "Member id does not match any existing member",
+      });
     }
-    const member = member;
+    const updatedMember = await Member.findOneAndUpdate(req.body);
+
+    return res
+      .status(200)
+      .send({ msg: "Member updated successfully", updateMember });
   } catch (err) {
     return res.status(500).send({ error: err });
   }
@@ -98,4 +110,4 @@ const deleteMember = async (req, res) => {
   }
 };
 
-module.exports = { createMember, deleteMember };
+module.exports = { createMember, updateMember, deleteMember };
