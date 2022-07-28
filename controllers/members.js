@@ -59,7 +59,6 @@ const createMember = async (req, res) => {
 const updateMember = async (req, res) => {
   try {
     const { firstName, lastname, membership } = req.body;
-    console.log(req.params.memberId);
     const member = await Member.findOne({ _id: req.params.memberId });
 
     // Fields validation
@@ -78,7 +77,7 @@ const updateMember = async (req, res) => {
 
     return res
       .status(200)
-      .send({ msg: "Member updated successfully", updateMember });
+      .send({ msg: "Member updated successfully", updatedMember });
   } catch (err) {
     return res.status(500).send({ error: err });
   }
