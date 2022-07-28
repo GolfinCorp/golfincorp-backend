@@ -62,9 +62,6 @@ const getClub = async (req, res) => {
 const updateClub = async (req, res) => {
 	try {
 		const { body, params, user } = req;
-		if (user.role !== "admin") {
-			return res.status(401).send({ error: "Admin rights are required" });
-		}
 		const club = await Club.findOne({ _id: params.id });
 		if (club._id !== user.clubId) {
 			return res

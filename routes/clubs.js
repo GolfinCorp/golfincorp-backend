@@ -11,7 +11,7 @@ const { tokenValidate, requireAdmin } = require("../middlewares/auth");
 
 router.post("/create", createClub);
 router.get("/", tokenValidate, requireAdmin, getClub);
-router.get("/members", tokenValidate, getMembers);
-router.put("/:id", tokenValidate, updateClub);
+router.get("/members", tokenValidate, requireAdmin, getMembers);
+router.put("/:id", tokenValidate, requireAdmin, updateClub);
 
 module.exports = router;
