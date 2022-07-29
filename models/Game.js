@@ -25,6 +25,11 @@ const GameSchema = new mongoose.Schema(
         );
         return unpayedGuest;
       },
+      getDebtFree() {
+        let members = this.guests.filter((guest) => guest.membership);
+        let payedGuests = this.guests.filter((guest) => guest.paymentId);
+        return [...members, ...payedGuests];
+      },
     },
   }
 );
