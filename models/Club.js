@@ -7,8 +7,8 @@ const ClubSchema = new mongoose.Schema({
   country: { type: String, required: true, maxLength: 50 },
 
   // New club proposition
-  maxParty: { type: Number, required: true },
-  guestPrice: { type: Number, required: true },
+  maxParty: { type: Number, required: true }, // Max game party size
+  guestPrice: { type: Number, required: true }, // Price per non member guest
 
   subscription: {
     startDate: { type: Date },

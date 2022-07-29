@@ -1,5 +1,11 @@
 const mongoose = require("mongoose");
 
+/**
+ * @methods
+ * ? this.canStart:  This method should return a boolean if there is any player who hasn't paid
+ * ? this.forceStar: forces a game to start by deleting all debtful guests and sets the status to start
+ */
+
 const GameSchema = new mongoose.Schema(
   {
     memberId: { type: String, required: true },
@@ -18,6 +24,7 @@ const GameSchema = new mongoose.Schema(
     ],
   },
   {
+    // ! Here we can declare methods for recurrent small functions
     methods: {
       canStart() {
         let unpayedGuest = this.guests.filter(
@@ -25,10 +32,13 @@ const GameSchema = new mongoose.Schema(
         );
         return unpayedGuest;
       },
-      getDebtFree() {
+      forceStart() {
         let members = this.guests.filter((guest) => guest.membership);
         let payedGuests = this.guests.filter((guest) => guest.paymentId);
-        return [...members, ...payedGuests];
+        this.guests = [...members, ...payedGuests];
+        this.status = "start";
+        this.save();
+        return this;
       },
     },
   }

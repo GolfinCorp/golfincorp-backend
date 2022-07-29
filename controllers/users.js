@@ -1,9 +1,19 @@
-// ? Encription Module https://github.com/kelektiv/node.bcrypt.js#readme
 const bcrypt = require("bcrypt");
 
 const User = require("../models/User");
 const Club = require("../models/Club");
 const { generateAccessToken } = require("../middlewares/auth");
+
+/**
+ *
+ * @exports
+ *    login(body: {email, password})
+ *    TODO getUserData()
+ *
+ * ? Docs
+ *    Encription Module https://github.com/kelektiv/node.bcrypt.js#readme
+ *
+ */
 
 const login = async (req, res) => {
   try {

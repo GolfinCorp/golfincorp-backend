@@ -3,6 +3,14 @@ const User = require("../models/User");
 const Member = require("../models/Members");
 const bcrypt = require("bcrypt");
 
+/**
+ *
+ * @exports
+ *    createClub(body: {email, name, state, country, subscription, maxParty, guestPrice})
+ *    getClub()
+ *    TODO updateClub()
+ */
+
 const saltRounds = 10;
 
 const createClub = async (req, res) => {
@@ -62,6 +70,7 @@ const getClub = async (req, res) => {
   }
 };
 
+// ! Unfinished function
 const updateClub = async (req, res) => {
   try {
     const { body, params, user } = req;

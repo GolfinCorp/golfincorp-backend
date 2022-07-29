@@ -2,7 +2,18 @@ const Member = require("../models/Members");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
-const saltRounds = 10;
+/**
+ *
+ * @exports
+ *  getMembers() -> requires admin role
+ *  createMember(body: {firstName, lastName, membership, email})
+ *  updateMember(body: {firstName, lastName, membership}, params: {id})
+ *
+ *  deleteMember(params: {id})
+ *
+ */
+
+const saltRounds = 10; // salt for hash
 
 const getMembers = async (req, res) => {
   try {

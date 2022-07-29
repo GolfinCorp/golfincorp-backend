@@ -1,9 +1,21 @@
 const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
-const Payment = require("../models/Payment");
 
-// ? If member gets all his game, else get all the club games
+/**
+ *
+ * @exports
+ *  getGames()
+ *  createGame(body: {date, [guests]})
+ *  manageGames(body: {status}, params: {id})
+ *  forceStart(params: {id})
+ *  deleteGame(params: {id})
+ *
+ *  TODO addMembers()
+ *
+ */
+
+// * If member gets all his game, else get all the club games
 const getGames = async (req, res) => {
   try {
     const games = await Game.find(
@@ -81,7 +93,7 @@ const manageGame = async (req, res) => {
     }
 
     if (!status) {
-      return res.status(400).send({ error: "Game status and id are required" });
+      return res.status(400).send({ error: "Game status is required" });
     }
 
     const game = await Game.findOne({ _id: params.id });
@@ -107,6 +119,7 @@ const manageGame = async (req, res) => {
   }
 };
 
+// ! unfinished function
 const addGuests = async (req, res) => {
   const { body, params, user } = req;
   const gameExists = await Game.findOne({ _id: `${params.id}` });
@@ -124,7 +137,7 @@ const addGuests = async (req, res) => {
   return res.status(200).send({ msg: "Success" });
 };
 
-// This function removes all the users with debt to start game
+// ? This function removes all the users with debt to start game
 const forceGameStart = async (req, res) => {
   const { params } = req;
   const game = await Game.findById(params.id);
@@ -133,10 +146,7 @@ const forceGameStart = async (req, res) => {
       .status(404)
       .send({ error: "Could not find any gaming with that id" });
   }
-  const validGuests = game.getDebtFree();
-  game.guests = [...validGuests];
-  game.status = "start";
-  game.save();
+  await game.forceStart();
   return res.status(200).send({ msg: "test", game });
 };
 
