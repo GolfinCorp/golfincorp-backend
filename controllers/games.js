@@ -1,24 +1,49 @@
+const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
-const router = require("../routes/games");
-const ObjectId = require("mongoose").Types.ObjectId;
+const Payment = require("../models/Payment");
 
 const createGame = async (req, res) => {
   try {
     const { date, guests } = req.body;
     if (!date) {
       return res.status(400).send({ error: "la fecha es necesaria" });
+    } else if (!Array.isArray(guests) || !guests.length) {
+      return res.status(400).send({ error: "Guests must be an array" });
     }
+
     const formatDate = new Date(date);
     const member = await Member.findOne({ _id: req.user.memberId });
+    const hostClub = await Club.findOne({ _id: req.user.clubId });
+
+    let payingGuest = [];
+    let memberGuest = [];
+
+    for (let i = 0; i < guests.length; i++) {
+      if (guests[i].membership) {
+        let response = await Member.findOne({
+          membership: guests[i].membership,
+          clubId: req.user.clubId,
+        });
+        if (response) {
+          memberGuest.push({ ...guests[i], name: response.firstName });
+        } else {
+          return res
+            .status(404)
+            .send({ error: "Guest was given an invalid member id" });
+        }
+      } else {
+        payingGuest.push({ ...guests[i], bill: hostClub.guestPrice });
+      }
+    }
 
     const gameResponse = await Game.create({
       clubId: req.user.clubId,
-      memberId: member._id,
+      memberId: req.user.memberId,
       membership: member.membership,
       memberName: member.firstName,
       date: formatDate,
-      guests,
+      guests: [...memberGuest, ...payingGuest],
     });
 
     return res.status(200).send({ game: gameResponse });

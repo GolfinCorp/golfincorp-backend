@@ -7,7 +7,8 @@ const saltRounds = 10;
 
 const createClub = async (req, res) => {
   try {
-    const { email, name, state, country, subscription } = req.body;
+    const { email, name, state, country, subscription, maxParty, guestPrice } =
+      req.body;
 
     if ((!email, !name, !state, !country, !subscription)) {
       return res.status(400).send({ error: "All fields are required" });
@@ -20,6 +21,8 @@ const createClub = async (req, res) => {
       name,
       state,
       country,
+      maxParty,
+      guestPrice,
       subscription: {
         start_date: new Date(),
         plan: subscription.plan,
