@@ -3,55 +3,6 @@ const Game = require("../models/Game");
 const Member = require("../models/Members");
 const Payment = require("../models/Payment");
 
-const createGame = async (req, res) => {
-  try {
-    const { date, guests } = req.body;
-    if (!date) {
-      return res.status(400).send({ error: "la fecha es necesaria" });
-    } else if (!Array.isArray(guests) || !guests.length) {
-      return res.status(400).send({ error: "Guests must be an array" });
-    }
-
-    const formatDate = new Date(date);
-    const member = await Member.findOne({ _id: req.user.memberId });
-    const hostClub = await Club.findOne({ _id: req.user.clubId });
-
-    let payingGuest = [];
-    let memberGuest = [];
-
-    for (let i = 0; i < guests.length; i++) {
-      if (guests[i].membership) {
-        let response = await Member.findOne({
-          membership: guests[i].membership,
-          clubId: req.user.clubId,
-        });
-        if (response) {
-          memberGuest.push({ ...guests[i], name: response.firstName });
-        } else {
-          return res
-            .status(404)
-            .send({ error: "Guest was given an invalid member id" });
-        }
-      } else {
-        payingGuest.push({ ...guests[i], bill: hostClub.guestPrice });
-      }
-    }
-
-    const gameResponse = await Game.create({
-      clubId: req.user.clubId,
-      memberId: req.user.memberId,
-      membership: member.membership,
-      memberName: member.firstName,
-      date: formatDate,
-      guests: [...memberGuest, ...payingGuest],
-    });
-
-    return res.status(200).send({ game: gameResponse });
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 // ? If member gets all his game, else get all the club games
 const getGames = async (req, res) => {
   try {
@@ -66,10 +17,64 @@ const getGames = async (req, res) => {
   }
 };
 
+const createGame = async (req, res) => {
+  try {
+    const { body, user } = req;
+    const { date, guests } = body;
+
+    // Validate body
+    if (!date) {
+      return res.status(400).send({ error: "la fecha es necesaria" });
+    } else if (!Array.isArray(guests) || !guests.length) {
+      return res.status(400).send({ error: "Guests must be an array" });
+    }
+
+    const formatDate = new Date(date);
+    const member = await Member.findOne({ _id: user.memberId });
+    const hostClub = await Club.findOne({ _id: user.clubId });
+
+    // Validate which guests have to be charged($), and generate a "bill"
+    let payingGuest = []; // Non member guests have to pay
+    let memberGuest = []; // Guests with membership don't pay
+    for (let i = 0; i < guests.length; i++) {
+      if (guests[i].membership) {
+        // Validate membership legitimacy
+        let response = await Member.findOne({
+          membership: guests[i].membership,
+          clubId: user.clubId,
+        });
+        if (response) {
+          memberGuest.push({ ...guests[i], name: response.firstName });
+        } else {
+          return res
+            .status(404)
+            .send({ error: "Member was given an invalid membership" });
+        }
+      } else {
+        // Bill price is retrieved from club.guestPrice
+        payingGuest.push({ ...guests[i], bill: hostClub.guestPrice });
+      }
+    }
+
+    // Create game
+    const gameResponse = await Game.create({
+      clubId: user.clubId,
+      memberId: user.memberId,
+      membership: member.membership,
+      memberName: member.firstName,
+      date: formatDate,
+      guests: [...memberGuest, ...payingGuest],
+    });
+    return res.status(200).send({ game: gameResponse });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const manageGame = async (req, res) => {
   try {
     const { params, body, user } = req;
-    let { status } = body;
+    let { status } = await body;
 
     if (user.role === "member") {
       status = "cancelled";
@@ -79,19 +84,24 @@ const manageGame = async (req, res) => {
       return res.status(400).send({ error: "Game status and id are required" });
     }
 
-    const gameExists = await Game.findOne({ _id: params.id });
-    if (!gameExists) {
+    const game = await Game.findOne({ _id: params.id });
+    if (!game) {
       return res
         .status(404)
         .send({ error: "Game id does not match any existing game" });
     }
 
-    const gameRespone = await Game.findByIdAndUpdate(
-      params.id,
-      { status },
-      { new: true }
-    );
-    return res.status(200).send(gameRespone);
+    if (status === "start") {
+      let start = await game.canStart();
+      if (start) {
+        return res
+          .status(406)
+          .send({ error: `Payments Missing`, payload: start });
+      }
+    }
+    game.status = status;
+    await game.save();
+    return res.status(200).send(game);
   } catch (err) {
     console.log(err);
   }
@@ -114,22 +124,42 @@ const addGuests = async (req, res) => {
   return res.status(200).send({ msg: "Success" });
 };
 
+// This function removes all the users with debt to start game
+const forceGameStart = async (req, res) => {
+  const { params } = req;
+  const game = await Game.findById(params.id);
+  if (!game) {
+    return res
+      .status(404)
+      .send({ error: "Could not find any gaming with that id" });
+  }
+  const validGuests = game.getDebtFree();
+  game.guests = [...validGuests];
+  game.status = "start";
+  game.save();
+  return res.status(200).send({ msg: "test", game });
+};
+
 const deleteGame = async (req, res) => {
   try {
-    const gameExist = await Game.findOne({ _id: req.params.id });
-    if (!gameExist) {
+    const game = await Game.findOne({ _id: req.params.id });
+    if (!game) {
       return res
         .status(404)
         .send({ error: "Game id provided does not match any existing game" });
     }
-
-    const deleteResponse = await Game.deleteOne({ _id: req.params.id });
-    return res
-      .status(200)
-      .send({ msg: "Game deleted succesfully", deleteResponse });
+    game.delete();
+    return res.status(200).send({ msg: "Game deleted succesfully", game });
   } catch (error) {
     console.log(error);
   }
 };
 
-module.exports = { createGame, getGames, manageGame, deleteGame, addGuests };
+module.exports = {
+  createGame,
+  getGames,
+  manageGame,
+  deleteGame,
+  addGuests,
+  forceGameStart,
+};
