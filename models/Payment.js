@@ -6,7 +6,6 @@ const PaymentSchema = new mongoose.Schema({
   reference: { type: String },
   status: { type: String, default: "pending" },
   gameId: { type: String, required: true },
-  clubId: { type: String, required: true },
 });
 
 const Payment = mongoose.model("Payment", PaymentSchema);

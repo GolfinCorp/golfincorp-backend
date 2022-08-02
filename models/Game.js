@@ -40,6 +40,7 @@ const GameSchema = new mongoose.Schema(
         this.save();
         return this;
       },
+      addGuest() {},
     },
   }
 );

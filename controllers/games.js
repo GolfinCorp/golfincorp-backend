@@ -1,7 +1,7 @@
 const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
-
+const { memberValidator } = require("../utils/guests");
 /**
  *
  * @exports
@@ -44,19 +44,24 @@ const createGame = async (req, res) => {
     const formatDate = new Date(date);
     const member = await Member.findOne({ _id: user.memberId });
     const hostClub = await Club.findOne({ _id: user.clubId });
+    if (!member || !hostClub) {
+      return res.status(404).send({ error: "Coulnd find member or club" });
+    }
+    //! We need to seriously find a way to make this a reusable function
 
-    // Validate which guests have to be charged($), and generate a "bill"
     let payingGuest = []; // Non member guests have to pay
     let memberGuest = []; // Guests with membership don't pay
-    for (let i = 0; i < guests.length; i++) {
-      if (guests[i].membership) {
+    //
+    for (let guest of guests) {
+      if (guest.membership) {
         // Validate membership legitimacy
         let response = await Member.findOne({
-          membership: guests[i].membership,
-          clubId: user.clubId,
+          membership: guest.membership,
+          clubId: hostClub._id,
         });
+
         if (response) {
-          memberGuest.push({ ...guests[i], name: response.firstName });
+          memberGuest.push({ ...guest, name: response.firstName });
         } else {
           return res
             .status(404)
@@ -64,10 +69,9 @@ const createGame = async (req, res) => {
         }
       } else {
         // Bill price is retrieved from club.guestPrice
-        payingGuest.push({ ...guests[i], bill: hostClub.guestPrice });
+        payingGuest.push({ ...guest, bill: club.guestPrice });
       }
     }
-
     // Create game
     const gameResponse = await Game.create({
       clubId: user.clubId,
@@ -75,7 +79,7 @@ const createGame = async (req, res) => {
       membership: member.membership,
       memberName: member.firstName,
       date: formatDate,
-      guests: [...memberGuest, ...payingGuest],
+      guests: [...payingGuest, ...memberGuest],
     });
     return res.status(200).send({ game: gameResponse });
   } catch (err) {
@@ -122,17 +126,44 @@ const manageGame = async (req, res) => {
 // ! unfinished function
 const addGuests = async (req, res) => {
   const { body, params, user } = req;
-  const gameExists = await Game.findOne({ _id: `${params.id}` });
-  if (!gameExists) {
+  const { guests } = body;
+  const game = await Game.findOne({ _id: `${params.id}` });
+  const club = await Game.findOne({ _id: user.clubId });
+
+  if (!game) {
     return res
       .status(404)
       .send({ error: "Guest id doesn't match any existing game" });
   }
-  if (!body.guests) {
+  if (!guests) {
     return res.status(400).send({ error: "At least 1 guest is required" });
   }
-  if (!Array.isArray(body.guests) || !body.guests.length) {
+  if (!Array.isArray(guests) || !guests.length) {
     return res.status(400).send({ error: "Guests must not be an empty array" });
+  }
+
+  //! We need to seriously find a way to make this a reusable function
+  let payingGuest = []; // Non member guests have to pay
+  let memberGuest = []; // Guests with membership don't pay
+  for (let guest of guests) {
+    if (guest.membership) {
+      // Validate membership legitimacy
+      let response = await Member.findOne({
+        membership: guest.membership,
+        clubId: user.clubId,
+      });
+
+      if (response) {
+        memberGuest.push({ ...guest, name: response.firstName });
+      } else {
+        return res
+          .status(404)
+          .send({ error: "Member was given an invalid membership" });
+      }
+    } else {
+      // Bill price is retrieved from club.guestPrice
+      payingGuest.push({ ...guest, bill: club.guestPrice });
+    }
   }
   return res.status(200).send({ msg: "Success" });
 };
