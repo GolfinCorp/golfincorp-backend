@@ -1,0 +1,175 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Api diseñada para el manejo de juegos de golf",
+    "version": "1.0.0",
+    "title": "Golfincorp",
+    "contact": {
+      "email": "abc@gmail.com"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "host": "localhost:8080",
+  "basePath": "/api",
+  "definitions": {
+    "Club": {
+      "type": "object",
+      "title": "Club ⛳",
+      "description": "Esquema base de los clubs de golf",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "maxParty": {
+          "type": "number"
+        },
+        "guestPrice": {
+          "type": "number"
+        },
+        "subscription": {
+          "type": "object",
+          "properties": {
+            "startDate": {
+              "type": "string"
+            },
+            "billingDate": {
+              "type": "string"
+            },
+            "bills": {
+              "type": "array"
+            },
+            "plan": {
+              "type": "string"
+            },
+            "price": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "Game": {
+      "type": "object",
+      "title": "Game 🏌️⛳",
+      "description": "Esquema de los juegos agendados",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "memberId": {
+          "type": "string"
+        },
+        "clubId": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "memberName": {
+          "type": "string"
+        },
+        "date": {
+          "type": "number"
+        },
+        "status": {
+          "type": "number"
+        },
+        "guests": {
+          "type": "array",
+          "s": "array of guests",
+          "$ref": "#/definitions/Guest"
+        }
+      }
+    },
+    "Guest": {
+      "type": "object",
+      "title": "Guest 🤓",
+      "description": "Guest model used for guests",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "bill": {
+          "type": "number"
+        }
+      }
+    },
+    "Member": {
+      "type": "object",
+      "title": "Member 🏌️",
+      "description": "Schema for members of a club",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "billingDate": {
+          "type": "string"
+        },
+        "statud": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "title": "User 👨‍💻",
+      "description": "Schema for a loggable user with role",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "newUser": {
+          "type": "string"
+        }
+      }
+    },
+    "Payment": {
+      "type": "object",
+      "title": "Payment/bill 💰",
+      "description": "Payment object generated for clubs or members of a club 🤑",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "paymentMethod": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

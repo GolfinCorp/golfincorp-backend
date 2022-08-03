@@ -1,7 +1,6 @@
 const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
-const { memberValidator } = require("../utils/guests");
 /**
  *
  * @exports
@@ -51,7 +50,7 @@ const createGame = async (req, res) => {
 
     let payingGuest = []; // Non member guests have to pay
     let memberGuest = []; // Guests with membership don't pay
-    //
+    guests.reduce(guest);
     for (let guest of guests) {
       if (guest.membership) {
         // Validate membership legitimacy
