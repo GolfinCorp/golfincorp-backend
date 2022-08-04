@@ -19,7 +19,7 @@ const createClub = async (req, res) => {
       req.body;
 
     if ((!email, !name, !state, !country, !subscription)) {
-      return res.status(400).send({ error: "All fields are required" });
+      return res.status(400).send({ error: "we need all fields 😐" });
     }
 
     const provitionalPassword = name.replaceAll(" ", "_").toLowerCase();
@@ -76,9 +76,7 @@ const updateClub = async (req, res) => {
     const { body, params, user } = req;
     const club = await Club.findOne({ _id: params.id });
     if (club._id !== user.clubId) {
-      return res
-        .status(401)
-        .send({ error: "You're not a member of this club" });
+      return res.status(401).send({ error: "unauthorized 👮‍♂️" });
     }
     if (!club) {
       return res

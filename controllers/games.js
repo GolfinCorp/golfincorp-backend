@@ -44,7 +44,9 @@ const createGame = async (req, res) => {
     const member = await Member.findOne({ _id: user.memberId });
     const hostClub = await Club.findOne({ _id: user.clubId });
     if (!member || !hostClub) {
-      return res.status(404).send({ error: "Coulnd find member or club" });
+      return res
+        .status(404)
+        .send({ error: "couln't find that club or user 🤨" });
     }
     //! We need to seriously find a way to make this a reusable function
 
@@ -184,12 +186,10 @@ const deleteGame = async (req, res) => {
   try {
     const game = await Game.findOne({ _id: req.params.id });
     if (!game) {
-      return res
-        .status(404)
-        .send({ error: "Game id provided does not match any existing game" });
+      return res.status(404).send({ error: "couln't find that game 🤨" });
     }
     game.delete();
-    return res.status(200).send({ msg: "Game deleted succesfully", game });
+    return res.status(200).send({ msg: "Deleted Data 🔥", game });
   } catch (error) {
     console.log(error);
   }

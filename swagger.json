@@ -13,6 +13,331 @@
   ],
   "host": "localhost:8080",
   "basePath": "/api",
+  "paths": {
+    "/api/clubs": {
+      "get": {
+        "summary": "Get club ⛳",
+        "description": "Toda la informacion del club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Club data 📁",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clubs/create": {
+      "post": {
+        "summary": "New Club ⛳",
+        "description": "Crea un nuevo club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created club 👌",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clubs/:id": {
+      "put": {
+        "summary": "Update Club ⛳",
+        "description": "Modifica un club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Club id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "updated data 👌",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couln't find that club 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games": {
+      "get": {
+        "summary": "Get games 🏌️⛳ ",
+        "description": "Get all games of a club",
+        "tags": [
+          "Games"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game data 🎉",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/api/games/:id": {
+      "delete": {
+        "summary": "Deletes a game 🔥",
+        "description": "Borra un juego usando un id",
+        "tags": [
+          "Games"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "Game id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted Data 🔥",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couln't find that game 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/create": {
+      "post": {
+        "summary": "Create a game 🎉",
+        "description": "Crea un nuevo juego",
+        "tags": [
+          "Games"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Game created 🎉",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "404": {
+            "description": "couln't find that club or user 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/manage/:id": {
+      "put": {
+        "summary": "Edit game 🔧",
+        "description": "Edit a file"
+      }
+    }
+  },
   "definitions": {
     "Club": {
       "type": "object",
@@ -90,7 +415,6 @@
         },
         "guests": {
           "type": "array",
-          "s": "array of guests",
           "$ref": "#/definitions/Guest"
         }
       }
