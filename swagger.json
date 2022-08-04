@@ -1,677 +1,860 @@
 {
-	"swagger": "2.0",
-	"info": {
-		"description": "Api diseñada para el manejo de juegos de golf",
-		"version": "1.0.0",
-		"title": "Golfincorp",
-		"contact": {
-			"email": "abc@gmail.com"
-		}
-	},
-	"schemes": ["http"],
-	"host": "localhost:8080",
-	"basePath": "/api",
-	"paths": {
-		"/api/clubs": {
-			"get": {
-				"summary": "Get club ⛳",
-				"description": "Toda la informacion del club",
-				"tags": ["Club"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"type": "string",
-						"name": "Authorization",
-						"required": true
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Club data 📁",
-						"schema": {
-							"type": "object",
-							"$ref": "#/definitions/Club"
-						}
-					},
-					"400": {
-						"description": "we need all fields 😐",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/clubs/create": {
-			"post": {
-				"summary": "New Club ⛳",
-				"description": "Crea un nuevo club",
-				"tags": ["Club"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"type": "string",
-						"name": "Authorization",
-						"required": true
-					},
-					{
-						"in": "body",
-						"name": "body",
-						"required": true,
-						"schema": {
-							"type": "object",
-							"$ref": "#/definitions/Club"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Created club 👌",
-						"schema": {
-							"type": "object",
-							"$ref": "#/definitions/Club"
-						}
-					},
-					"400": {
-						"description": "we need all fields 😐",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "unauthorized 👮‍♂️",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/clubs/:id": {
-			"put": {
-				"summary": "Update Club ⛳",
-				"description": "Modifica un club",
-				"tags": ["Club"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "Club id",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "header",
-						"type": "string",
-						"name": "Authorization",
-						"required": true
-					},
-					{
-						"in": "body",
-						"name": "body",
-						"required": true,
-						"schema": {
-							"type": "object",
-							"$ref": "#/definitions/Club"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "updated data 👌",
-						"schema": {
-							"type": "object",
-							"$ref": "#/definitions/Club"
-						}
-					},
-					"400": {
-						"description": "we need all fields 😐",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "unauthorized 👮‍♂️",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "couln't find that club 🤨",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/games": {
-			"get": {
-				"summary": "Get games 🏌️⛳ ",
-				"description": "Get all games of a club",
-				"tags": ["Games"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Game data 🎉",
-						"schema": {
-							"type": ["object"],
-							"$ref": "#/definitions/Game"
-						}
-					}
-				}
-			}
-		},
-		"/api/games/:id": {
-			"delete": {
-				"summary": "Deletes a game 🔥",
-				"description": "Borra un juego usando un id",
-				"tags": ["Games"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "path",
-						"name": "Game id",
-						"type": "string",
-						"required": true
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Deleted Data 🔥",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					},
-					"401": {
-						"description": "unauthorized 👮",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "couln't find that game 🤨",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/games/create": {
-			"post": {
-				"summary": "Create a game 🎉",
-				"description": "Crea un nuevo juego",
-				"tags": ["Games"],
-				"consumes": ["application/json"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"type": "string",
-						"name": "Authorization"
-					},
-					{
-						"in": "body",
-						"name": "body",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "Game created 🎉",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					},
-					"400": {
-						"description": "we need all fields 😐",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					},
-					"404": {
-						"description": "couln't find that club or user 🤨",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/games/manage/:id": {
-			"put": {
-				"summary": "Edit game 🔧",
-				"description": "Edit a file"
-			}
-		},
-		"/api/members": {
-			"get": {
-				"summary": "Get members 🏌️",
-				"description": "Get all members of the club",
-				"tags": ["Members"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "All members from club",
-						"schema": {
-							"type": ["object"],
-							"$ref": "#/definitions/Member"
-						}
-					},
-					"401": {
-						"description": "Admin rights are required 🛂",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/members/create": {
-			"post": {
-				"summary": "Create member ✨🏌️",
-				"description": "Create member for the club",
-				"tags": ["Members"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "body",
-						"name": "body",
-						"schema": {
-							"$ref": "#/definitions/Member"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Create member for the club",
-						"schema": {
-							"type": ["object"],
-							"$ref": "#/definitions/Member"
-						}
-					},
-					"400": {
-						"description": "This email already in use",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Admin rights are required 🛂",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/members/:id": {
-			"put": {
-				"summary": "Update member 🔧🏌️",
-				"description": "Update member of the club",
-				"tags": ["Members"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "body",
-						"name": "body",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Update member for the club",
-						"schema": {
-							"type": ["object"],
-							"$ref": "#/definitions/Member"
-						}
-					},
-					"400": {
-						"description": "Either the firstname, lastname or membership are required to update",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Member id does not match any existing member",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/members/delete": {
-			"delete": {
-				"summary": "Delete member 🔥🏌️",
-				"description": "Delete member of the club",
-				"tags": ["Members"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "body",
-						"name": "memberId",
-						"type": "string",
-						"required": true
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Delete member for the club",
-						"schema": {
-							"type": ["object"],
-							"$ref": "#/definitions/Member"
-						}
-					},
-					"400": {
-						"description": "Membership identifier is required",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Member id not found",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "Admin rights are required 🛂",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	},
-	"definitions": {
-		"Club": {
-			"type": "object",
-			"title": "Club ⛳",
-			"description": "Esquema base de los clubs de golf",
-			"properties": {
-				"_id": {
-					"type": "string"
-				},
-				"email": {
-					"type": "string"
-				},
-				"name": {
-					"type": "string"
-				},
-				"state": {
-					"type": "string"
-				},
-				"country": {
-					"type": "string"
-				},
-				"maxParty": {
-					"type": "number"
-				},
-				"guestPrice": {
-					"type": "number"
-				},
-				"subscription": {
-					"type": "object",
-					"properties": {
-						"startDate": {
-							"type": "string"
-						},
-						"billingDate": {
-							"type": "string"
-						},
-						"bills": {
-							"type": "array"
-						},
-						"plan": {
-							"type": "string"
-						},
-						"price": {
-							"type": "number"
-						}
-					}
-				}
-			}
-		},
-		"Game": {
-			"type": "object",
-			"title": "Game 🏌️⛳",
-			"description": "Esquema de los juegos agendados",
-			"properties": {
-				"_id": {
-					"type": "string"
-				},
-				"memberId": {
-					"type": "string"
-				},
-				"clubId": {
-					"type": "string"
-				},
-				"membership": {
-					"type": "string"
-				},
-				"memberName": {
-					"type": "string"
-				},
-				"date": {
-					"type": "number"
-				},
-				"status": {
-					"type": "number"
-				},
-				"guests": {
-					"type": "array",
-					"$ref": "#/definitions/Guest"
-				}
-			}
-		},
-		"Guest": {
-			"type": "object",
-			"title": "Guest 🤓",
-			"description": "Guest model used for guests",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"membership": {
-					"type": "string"
-				},
-				"bill": {
-					"type": "number"
-				}
-			}
-		},
-		"Member": {
-			"type": "object",
-			"title": "Member 🏌️",
-			"description": "Schema for members of a club",
-			"properties": {
-				"firstName": {
-					"type": "string"
-				},
-				"lastname": {
-					"type": "string"
-				},
-				"membership": {
-					"type": "string"
-				},
-				"billingDate": {
-					"type": "string"
-				},
-				"status": {
-					"type": "string"
-				}
-			}
-		},
-		"User": {
-			"type": "object",
-			"title": "User 👨‍💻",
-			"description": "Schema for a loggable user with role",
-			"properties": {
-				"email": {
-					"type": "string"
-				},
-				"password": {
-					"type": "string"
-				},
-				"role": {
-					"type": "string"
-				},
-				"newUser": {
-					"type": "string"
-				}
-			}
-		},
-		"Payment": {
-			"type": "object",
-			"title": "Payment/bill 💰",
-			"description": "Payment object generated for clubs or members of a club 🤑",
-			"properties": {
-				"name": {
-					"type": "string"
-				},
-				"paymentMethod": {
-					"type": "string"
-				},
-				"reference": {
-					"type": "string"
-				},
-				"status": {
-					"type": "string"
-				}
-			}
-		}
-	}
+  "swagger": "2.0",
+  "info": {
+    "description": "Api diseñada para el manejo de juegos de golf",
+    "version": "1.0.0",
+    "title": "Golfincorp",
+    "contact": {
+      "email": "abc@gmail.com"
+    }
+  },
+  "schemes": [
+    "http"
+  ],
+  "host": "localhost:8080",
+  "basePath": "/api",
+  "paths": {
+    "/api/clubs": {
+      "get": {
+        "summary": "Get club ⛳",
+        "description": "Toda la informacion del club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Club data 📁",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clubs/create": {
+      "post": {
+        "summary": "New Club ⛳",
+        "description": "Crea un nuevo club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Created club 👌",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clubs/:id": {
+      "put": {
+        "summary": "Update Club ⛳",
+        "description": "Modifica un club",
+        "tags": [
+          "Club"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "Club id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "updated data 👌",
+            "schema": {
+              "type": "object",
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couln't find that club 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games": {
+      "get": {
+        "summary": "Get games 🏌️⛳ ",
+        "description": "Get all games of a club",
+        "tags": [
+          "Games"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Game data 🎉",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Game"
+            }
+          }
+        }
+      }
+    },
+    "/api/games/:id": {
+      "delete": {
+        "summary": "Deletes a game 🔥",
+        "description": "Borra un juego usando un id",
+        "tags": [
+          "Games"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "Game id",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted Data 🔥",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couln't find that game 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/create": {
+      "post": {
+        "summary": "Create a game 🎉",
+        "description": "Crea un nuevo juego",
+        "tags": [
+          "Games"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "type": "string",
+            "name": "Authorization"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Game created 🎉",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "404": {
+            "description": "couln't find that club or user 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/manage/:id": {
+      "put": {
+        "summary": "Edit game 🔧",
+        "description": "Edita un juego",
+        "tags": [
+          "Games"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "game updated 🔧",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "400": {
+            "description": "we need all fields 😐",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couldn't find that game 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/games/manage/force/:id": {
+      "put": {
+        "summary": "Force a start 🔥",
+        "description": "Fuerza el comienzo de un juego con invitados morosos",
+        "tags": [
+          "Games"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "game id",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "game started 💯",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          },
+          "401": {
+            "description": "unauthorized 👮‍♂️",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "couln't find that game 🤨",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/members": {
+      "get": {
+        "summary": "Get members 🏌️",
+        "description": "Get all members of the club",
+        "tags": [
+          "Members"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All members from club",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Member"
+            }
+          },
+          "401": {
+            "description": "Admin rights are required 🛂",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/members/create": {
+      "post": {
+        "summary": "Create member ✨🏌️",
+        "description": "Create member for the club",
+        "tags": [
+          "Members"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Member"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Create member for the club",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Member"
+            }
+          },
+          "400": {
+            "description": "This email already in use",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Admin rights are required 🛂",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/members/:id": {
+      "put": {
+        "summary": "Update member 🔧🏌️",
+        "description": "Update member of the club",
+        "tags": [
+          "Members"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Update member for the club",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Member"
+            }
+          },
+          "400": {
+            "description": "Either the firstname, lastname or membership are required to update",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member id does not match any existing member",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/members/delete": {
+      "delete": {
+        "summary": "Delete member 🔥🏌️",
+        "description": "Delete member of the club",
+        "tags": [
+          "Members"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "properties": {
+                "memberId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete member for the club",
+            "schema": {
+              "type": [
+                "object"
+              ],
+              "$ref": "#/definitions/Member"
+            }
+          },
+          "400": {
+            "description": "Membership identifier is required",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Member id not found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Admin rights are required 🛂",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Club": {
+      "type": "object",
+      "title": "Club ⛳",
+      "description": "Esquema base de los clubs de golf",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "maxParty": {
+          "type": "number"
+        },
+        "guestPrice": {
+          "type": "number"
+        },
+        "subscription": {
+          "type": "object",
+          "properties": {
+            "startDate": {
+              "type": "string"
+            },
+            "billingDate": {
+              "type": "string"
+            },
+            "bills": {
+              "type": "array"
+            },
+            "plan": {
+              "type": "string"
+            },
+            "price": {
+              "type": "number"
+            }
+          }
+        }
+      }
+    },
+    "Game": {
+      "type": "object",
+      "title": "Game 🏌️⛳",
+      "description": "Esquema de los juegos agendados",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "memberId": {
+          "type": "string"
+        },
+        "clubId": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "memberName": {
+          "type": "string"
+        },
+        "date": {
+          "type": "number"
+        },
+        "status": {
+          "type": "number"
+        },
+        "guests": {
+          "type": "array",
+          "$ref": "#/definitions/Guest"
+        }
+      }
+    },
+    "Guest": {
+      "type": "object",
+      "title": "Guest 🤓",
+      "description": "Guest model used for guests",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "bill": {
+          "type": "number"
+        }
+      }
+    },
+    "Member": {
+      "type": "object",
+      "title": "Member 🏌️",
+      "description": "Schema for members of a club",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastname": {
+          "type": "string"
+        },
+        "membership": {
+          "type": "string"
+        },
+        "billingDate": {
+          "type": "string"
+        },
+        "statud": {
+          "type": "string"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "title": "User 👨‍💻",
+      "description": "Schema for a loggable user with role",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "newUser": {
+          "type": "string"
+        }
+      }
+    },
+    "Payment": {
+      "type": "object",
+      "title": "Payment/bill 💰",
+      "description": "Payment object generated for clubs or members of a club 🤑",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "paymentMethod": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }
