@@ -15,8 +15,8 @@ router.use(tokenValidate);
 router.get("/", getGames);
 router.post("/", createGame);
 router.delete("/:id", idValidator, deleteGame);
-router.post("/:id", idValidator, manageGame);
-router.put("/:id/force", requireAdmin, forceGameStart);
+router.patch("/:id", idValidator, manageGame);
+router.post("/:id/force", requireAdmin, forceGameStart);
 
 router.post("/:id/add-guest", idValidator, addGuests);
 

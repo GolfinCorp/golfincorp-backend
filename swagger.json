@@ -103,7 +103,7 @@
 			}
 		},
 		"/api/clubs/{id}": {
-			"put": {
+			"patch": {
 				"summary": "Update Club ⛳",
 				"description": "Modifica un club",
 				"tags": ["Club"],
@@ -197,61 +197,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/api/games/:id": {
-			"delete": {
-				"summary": "Deletes a game 🔥",
-				"description": "Borra un juego usando un id",
-				"tags": ["Games"],
-				"produces": ["application/json"],
-				"parameters": [
-					{
-						"in": "header",
-						"name": "Authorization",
-						"type": "string",
-						"required": true
-					},
-					{
-						"in": "path",
-						"name": "Game id",
-						"type": "string",
-						"required": true
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Deleted Data 🔥",
-						"schema": {
-							"$ref": "#/definitions/Game"
-						}
-					},
-					"401": {
-						"description": "unauthorized 👮",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "couln't find that game 🤨",
-						"schema": {
-							"type": "object",
-							"properties": {
-								"error": {
-									"type": "string"
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/games/create": {
+			},
 			"post": {
 				"summary": "Create a game 🎉",
 				"description": "Crea un nuevo juego",
@@ -299,8 +245,8 @@
 				}
 			}
 		},
-		"/api/games/manage/:id": {
-			"put": {
+		"/api/games/{id}": {
+			"patch": {
 				"summary": "Edit game 🔧",
 				"description": "Edita un juego",
 				"tags": ["Games"],
@@ -361,10 +307,60 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"summary": "Deletes a game 🔥",
+				"description": "Borra un juego usando un id",
+				"tags": ["Games"],
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"in": "header",
+						"name": "Authorization",
+						"type": "string",
+						"required": true
+					},
+					{
+						"in": "path",
+						"name": "Game id",
+						"type": "string",
+						"required": true
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Deleted Data 🔥",
+						"schema": {
+							"$ref": "#/definitions/Game"
+						}
+					},
+					"401": {
+						"description": "unauthorized 👮",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "couln't find that game 🤨",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
 			}
 		},
-		"/api/games/manage/force/:id": {
-			"put": {
+		"/api/games/{id}/force": {
+			"patch": {
 				"summary": "Force a start 🔥",
 				"description": "Fuerza el comienzo de un juego con invitados morosos",
 				"tags": ["Games"],
@@ -450,9 +446,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/api/members/create": {
+			},
 			"post": {
 				"summary": "Create member ✨🏌️",
 				"description": "Create member for the club",
@@ -507,7 +501,7 @@
 			}
 		},
 		"/api/members/:id": {
-			"put": {
+			"patch": {
 				"summary": "Update member 🔧🏌️",
 				"description": "Update member of the club",
 				"tags": ["Members"],
@@ -558,9 +552,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/api/members/delete": {
+			},
 			"delete": {
 				"summary": "Delete member 🔥🏌️",
 				"description": "Delete member of the club",
