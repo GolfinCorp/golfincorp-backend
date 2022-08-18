@@ -12,7 +12,7 @@
 	"host": "localhost:8080",
 	"basePath": "/api",
 	"paths": {
-		"/api/clubs": {
+		"/clubs": {
 			"get": {
 				"summary": "Get club ⛳",
 				"description": "Toda la informacion del club",
@@ -102,7 +102,7 @@
 				}
 			}
 		},
-		"/api/clubs/{id}": {
+		"/clubs/{id}": {
 			"patch": {
 				"summary": "Update Club ⛳",
 				"description": "Modifica un club",
@@ -175,7 +175,7 @@
 				}
 			}
 		},
-		"/api/games": {
+		"/games": {
 			"get": {
 				"summary": "Get games 🏌️⛳ ",
 				"description": "Get all games of a club",
@@ -245,7 +245,7 @@
 				}
 			}
 		},
-		"/api/games/{id}": {
+		"/games/{id}": {
 			"patch": {
 				"summary": "Edit game 🔧",
 				"description": "Edita un juego",
@@ -359,7 +359,7 @@
 				}
 			}
 		},
-		"/api/games/{id}/force": {
+		"/games/{id}/force": {
 			"patch": {
 				"summary": "Force a start 🔥",
 				"description": "Fuerza el comienzo de un juego con invitados morosos",
@@ -412,7 +412,7 @@
 				}
 			}
 		},
-		"/api/members": {
+		"/members": {
 			"get": {
 				"summary": "Get members 🏌️",
 				"description": "Get all members of the club",
@@ -500,7 +500,7 @@
 				}
 			}
 		},
-		"/api/members/:id": {
+		"/members/{id}": {
 			"patch": {
 				"summary": "Update member 🔧🏌️",
 				"description": "Update member of the club",
@@ -566,16 +566,10 @@
 						"required": true
 					},
 					{
-						"in": "body",
-						"name": "body",
-						"required": true,
-						"schema": {
-							"properties": {
-								"memberId": {
-									"type": "string"
-								}
-							}
-						}
+						"in": "path",
+						"name": "Member Id",
+						"type": "string",
+						"required": true
 					}
 				],
 				"responses": {
@@ -610,6 +604,76 @@
 					},
 					"401": {
 						"description": "Admin rights are required 🛂",
+						"schema": {
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/login": {
+			"post": {
+				"summary": "Authenticate you 🛂",
+				"description": "Give you the permissions that you're account has",
+				"tags": ["Authentication"],
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"in": "body",
+						"name": "body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"email": {
+									"type": "string"
+								},
+								"password": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "You're logged in the app!",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"token": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "We are missing some information!",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "That user can't be found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"406": {
+						"description": "Incorrect credentials!",
 						"schema": {
 							"type": "object",
 							"properties": {
