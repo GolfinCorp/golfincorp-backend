@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 // Swagger docs
@@ -15,14 +16,15 @@ require("dotenv").config();
 
 // Express app declaration
 mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(process.env.PORT || 8080, () => {
-      console.log("server is listening on port 8080");
-    });
-  })
-  .catch((err) => console.log(Error));
+	.connect(process.env.MONGO_URI)
+	.then(() => {
+		app.listen(process.env.PORT || 8080, () => {
+			console.log("server is listening on port 8080");
+		});
+	})
+	.catch((err) => console.log(Error));
 
+app.use(cors());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // for parsing application/json
