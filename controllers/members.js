@@ -42,6 +42,7 @@ const createMember = async (req, res) => {
 			membership,
 			email,
 			clubId,
+			billingDate: new Date(),
 		});
 
 		const provitionalPassword = `${firstName.toLowerCase()}${membership}`;
