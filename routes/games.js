@@ -5,6 +5,7 @@ const { idValidator } = require("../middlewares/validations");
 const {
 	createGame,
 	getGames,
+	getGamesByDay,
 	manageGame,
 	deleteGame,
 	addGuests,
@@ -13,6 +14,7 @@ const {
 
 router.use(tokenValidate);
 router.get("/", getGames);
+router.get("/filter", getGamesByDay);
 router.post("/", createGame);
 router.delete("/:id", idValidator, deleteGame);
 router.patch("/:id", idValidator, manageGame);

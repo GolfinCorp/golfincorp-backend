@@ -2,6 +2,7 @@ const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
 const { addDays } = require("../utils/sumDates");
+const PAGINATION = require("../consts/pagination");
 
 const createGame = async (req, res) => {
 	try {
@@ -67,17 +68,48 @@ const createGame = async (req, res) => {
 // ? If member gets all his game, else get all the club games
 const getGames = async (req, res) => {
 	try {
-		const { user } = req;
+		const { user, query } = req;
+		const limit = parseInt(query.limit ?? PAGINATION.LIMIT);
+		const offset = parseInt(query.offset ?? PAGINATION.OFFSET);
+
 		const isMember = Boolean(user.memberId);
-		const startDate = new Date(new Date().setHours(0, 0, 0, 0));
-		const endDate = addDays(startDate, 1);
+		const games = await Game.find(
+			isMember ? { memberId: user.memberId } : { clubId: user.clubId }
+		)
+			.skip(offset)
+			.limit(limit);
+		const gameCount = await Game.find(
+			isMember ? { memberId: user.memberId } : { clubId: user.clubId }
+		).count();
+
+		const pages = Math.ceil(gameCount / limit);
+		const current = offset ? gameCount % offset : 1;
+
+		return res.status(200).send({ games, pages, current });
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({ error: error.message });
+	}
+};
+
+const getGamesByDay = async (req, res) => {
+	try {
+		const { user, query } = req;
+		const { startDate, endDate } = query;
+		const from = new Date(startDate);
+		const to = new Date(endDate);
+
+		const defaultStartDate = new Date(new Date().setHours(0, 0, 0, 0));
+		const defaultEndDate = addDays(defaultStartDate, 1);
+
+		const isMember = Boolean(user.memberId);
 		const findParams = isMember
 			? { memberId: user.memberId }
 			: { clubId: user.clubId };
 		const games = await Game.find({
 			date: {
-				$gte: startDate,
-				$lt: endDate,
+				$gte: startDate ? from : defaultStartDate,
+				$lt: endDate ? to : defaultEndDate,
 			},
 			...findParams,
 		});
@@ -198,6 +230,7 @@ const deleteGame = async (req, res) => {
 module.exports = {
 	createGame,
 	getGames,
+	getGamesByDay,
 	manageGame,
 	deleteGame,
 	addGuests,
