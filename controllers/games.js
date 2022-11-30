@@ -1,6 +1,7 @@
 const Club = require("../models/Club");
 const Game = require("../models/Game");
 const Member = require("../models/Members");
+const { addDays } = require("../utils/sumDates");
 
 const createGame = async (req, res) => {
 	try {
@@ -15,8 +16,8 @@ const createGame = async (req, res) => {
 		}
 
 		const formatDate = new Date(date);
-		const member = await Member.findOne({ _id: user.memberId });
-		const hostClub = await Club.findOne({ _id: user.clubId });
+		const member = await Member.findById(user.memberId);
+		const hostClub = await Club.findById(user.clubId);
 		if (!member || !hostClub) {
 			return res
 				.status(404)
@@ -26,7 +27,6 @@ const createGame = async (req, res) => {
 
 		let payingGuest = []; // Non member guests have to pay
 		let memberGuest = []; // Guests with membership don't pay
-		guests.reduce(guest);
 		for (let guest of guests) {
 			if (guest.membership) {
 				// Validate membership legitimacy
@@ -69,9 +69,18 @@ const getGames = async (req, res) => {
 	try {
 		const { user } = req;
 		const isMember = Boolean(user.memberId);
-		const games = await Game.find(
-			isMember ? { memberId: user.memberId } : { clubId: user.clubId }
-		);
+		const startDate = new Date(new Date().setHours(0, 0, 0, 0));
+		const endDate = addDays(startDate, 1);
+		const findParams = isMember
+			? { memberId: user.memberId }
+			: { clubId: user.clubId };
+		const games = await Game.find({
+			date: {
+				$gte: startDate,
+				$lt: endDate,
+			},
+			...findParams,
+		});
 		return res.status(200).send(games);
 	} catch (error) {
 		console.log(error);
