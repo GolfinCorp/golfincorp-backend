@@ -1,13 +1,26 @@
 const Member = require("../models/Members");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
+const PAGINATION = require("../consts/pagination");
 
 const saltRounds = 10; // salt for hash
 
 const getMembers = async (req, res) => {
 	try {
-		const members = await Member.find({ clubId: req.user.clubId });
-		return res.status(200).send({ members });
+		const offset = parseInt(req.query.offset ?? PAGINATION.OFFSET);
+		const limit = parseInt(req.query.limit ?? PAGINATION.LIMIT);
+
+		const members = await Member.find({ clubId: req.user.clubId })
+			.skip(offset)
+			.limit(limit);
+		const membersCount = await Member.find({ clubId: req.user.clubId }).count();
+
+		const pages = Math.ceil(membersCount / limit);
+		const current = offset ? membersCount % offset : 1;
+
+		return res
+			.status(200)
+			.send({ count: membersCount, pages, current, members });
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send({ error: error.message });
