@@ -12,6 +12,8 @@ const userRoutes = require("./routes/users");
 const clubRoutes = require("./routes/clubs");
 const memberRoutes = require("./routes/members");
 const gameRoutes = require("./routes/games");
+const seedRoutes = require("./routes/seed");
+
 require("dotenv").config();
 
 // Express app declaration
@@ -36,3 +38,4 @@ app.use("/api/users", userRoutes);
 app.use("/api/clubs", clubRoutes);
 app.use("/api/members", memberRoutes);
 app.use("/api/games", gameRoutes);
+app.use("/api/backoffice/seed", seedRoutes);

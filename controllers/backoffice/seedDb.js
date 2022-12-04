@@ -1,7 +1,18 @@
-const Club = require("../models/Club");
-const User = require("../models/User");
+const Club = require("../../models/Club");
+const Member = require("../../models/Members");
+const User = require("../../models/User");
+
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+
+const generateRandomNumber = () => {
+  return Math.floor(Math.random() * 10000000);
+};
+
+const getRandomFromList = (list) => {
+  const randomNumber = Math.floor(Math.random() * list.length);
+  return list[randomNumber];
+};
 
 const firstNames = [
   "JOHN",
@@ -92,17 +103,10 @@ const generateClubObjects = async (req, res) => {
         price: 10,
       },
     };
-    console.log(clubData);
 
     const clubResponse = await Club.create(clubData);
-    console.log("club created");
 
-    const provitionalPassword = clubData.name
-      .replaceAll(" ", "_")
-      .toLowerCase();
-    console.log(provitionalPassword);
-    const hashedPassword = await bcrypt.hash(provitionalPassword, saltRounds);
-    console.log("encripted");
+    const hashedPassword = await bcrypt.hash("club", saltRounds);
     const superUser = {
       email: clubData.email,
       password: hashedPassword,
@@ -110,11 +114,46 @@ const generateClubObjects = async (req, res) => {
       clubId: clubResponse._id,
     };
     const userResponse = await User.create(superUser);
-    console.log("user created");
     clubs.push({ club: clubResponse, adminUser: userResponse });
   }
   return res.status(200).send(clubs);
 };
 
-const generateMember = () => {};
-module.exports = { generateClubObjects };
+const generateMembers = async () => {
+  let clubData = [];
+  for (let club of clubNames) {
+    let email = club.replaceAll(" ", "-");
+    club = await Club.findOne({ email: `${email.toLowerCase()}@gmail.com` });
+    let clubUsers = [];
+    for (let i = 0; i < 10; i++) {
+      const membership = generateRandomNumber();
+      const name = {
+        firstName: getRandomFromList(firstNames),
+        lastname: getRandomFromList(lastnames),
+      };
+      let userEmail = `${name.firstName}${name.lastname}${membership}@gmail.com`;
+      const member = {
+        firstName: name.firstName,
+        lastname: name.lastname,
+        membership,
+        email: userEmail,
+        clubId: club._id,
+        billingDate: new Date(),
+      };
+      let memberResponse = await Member.create(member);
+      let hashPassword = await bcrypt.hash("club", saltRounds);
+      let user = {
+        email: userEmail,
+        password: hashPassword,
+        role: "member",
+        clubId: club._id,
+        memberId: memberResponse._id,
+      };
+      let userResponse = await User.create(user);
+      clubUsers.push(userResponse);
+    }
+    clubData.push({ name: club.name, members: clubUsers });
+  }
+  return res.status(200).send(clubData);
+};
+module.exports = { generateClubObjects, generateMembers };
