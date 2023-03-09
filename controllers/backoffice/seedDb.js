@@ -126,24 +126,17 @@ const generateMembers = async () => {
     club = await Club.findOne({ email: `${email.toLowerCase()}@gmail.com` });
     let clubUsers = [];
     for (let i = 0; i < 10; i++) {
-      const membership = generateRandomNumber();
-      const name = {
+      let userEmail = `${name.firstName}${name.lastname}${membership}@gmail.com`;
+      let memberResponse = await Member.create({
         firstName: getRandomFromList(firstNames),
         lastname: getRandomFromList(lastnames),
-      };
-      let userEmail = `${name.firstName}${name.lastname}${membership}@gmail.com`;
-      const member = {
-        firstName: name.firstName,
-        lastname: name.lastname,
-        membership,
-        email: userEmail,
+        membership: generateRandomNumber(),
         clubId: club._id,
         billingDate: new Date(),
-      };
-      let memberResponse = await Member.create(member);
+      });
       let hashPassword = await bcrypt.hash("club", saltRounds);
       let user = {
-        email: userEmail,
+        email: `${memberResponse.firstName}${memberResponse.lastname}${membership}@gmail.com`,
         password: hashPassword,
         role: "member",
         clubId: club._id,
